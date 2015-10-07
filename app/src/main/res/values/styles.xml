@@ -10,4 +10,6 @@
         <item name="android:textColorSecondary">@color/textColorSecondary</item>
     </style>
 
+    <dimen name="com_facebook_profilepictureview_preset_size_small">250dp</dimen>
+
 </resources>
