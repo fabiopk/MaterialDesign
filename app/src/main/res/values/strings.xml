@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Workbench</string>
+    <string name="title_activity_main">Workbench</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="nav_i1">Home</string>
+    <string name="nav_i2">Minhas Reservas</string>
+    <string name="nav_i3">Ver no Mapa</string>
+    <string name="nav_i4">Logout</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+</resources>
