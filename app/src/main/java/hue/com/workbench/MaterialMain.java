@@ -2,15 +2,18 @@ package hue.com.workbench;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.login.widget.ProfilePictureView;
 
@@ -21,6 +24,7 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ProfilePictureView profileImage;
+    HueDatabaseAdapter hueHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,17 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
         profileImage.setProfileId(LoginFragment.profile.getId());
         TextView welcome = (TextView) findViewById(R.id.welcome);
         welcome.setText("Welcome back " + LoginFragment.profile.getFirstName());
+        hueHelper = new HueDatabaseAdapter(this);
+
+//        long id = hueHelper.insertData("Matsuri", "Rua André Marques, 570");
+//        if (id < 0 ){
+//            Toast.makeText(this, "FAIL!!!", Toast.LENGTH_LONG).show();
+//
+//        } else {
+//            Toast.makeText(this, "SUCESSO!!!" + id, Toast.LENGTH_LONG).show();
+//        }
+
+
     }
 
     @Override
@@ -74,6 +89,8 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.navigation_item_1){
                 startActivity(new Intent(this, MapsActivity.class));
+        } else if (menuItem.getItemId() == R.id.navigation_item_2){
+            Log.d("KAKAROTO", hueHelper.getAllData());
         }
         return false;
     }
