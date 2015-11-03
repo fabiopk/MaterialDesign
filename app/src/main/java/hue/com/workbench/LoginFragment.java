@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -76,6 +77,7 @@ public class LoginFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Button b_debug = (Button)view.findViewById(R.id.b_debug);
         super.onViewCreated(view, savedInstanceState);
 
 
@@ -89,5 +91,9 @@ public class LoginFragment extends Fragment {
         profileImage.setCropped(false);
 
 
+    }
+
+    public void DebugButton(View V) {
+        startActivity(new Intent(getActivity(), MaterialMain.class));
     }
 }

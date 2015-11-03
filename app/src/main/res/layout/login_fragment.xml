@@ -22,4 +22,14 @@
         android:layout_marginBottom="10dp"
         android:layout_gravity="center_horizontal" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DEBUG"
+        android:id="@+id/b_debug"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="69dp"
+        android:onClick="DebugButton"/>
+
 </RelativeLayout>

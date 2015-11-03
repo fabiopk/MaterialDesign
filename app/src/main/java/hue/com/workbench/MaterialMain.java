@@ -1,5 +1,6 @@
 package hue.com.workbench;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,10 +9,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,14 +50,15 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
         TextView welcome = (TextView) findViewById(R.id.welcome);
         welcome.setText("Welcome back " + LoginFragment.profile.getFirstName());
         hueHelper = new HueDatabaseAdapter(this);
+/*
+long id = hueHelper.insertData("Matsuri", "Rua André Marques, 570");
+if (id < 0 ){
+Toast.makeText(this, "FAIL!!!", Toast.LENGTH_LONG).show();
 
-//        long id = hueHelper.insertData("Matsuri", "Rua André Marques, 570");
-//        if (id < 0 ){
-//            Toast.makeText(this, "FAIL!!!", Toast.LENGTH_LONG).show();
-//
-//        } else {
-//            Toast.makeText(this, "SUCESSO!!!" + id, Toast.LENGTH_LONG).show();
-//        }
+} else {
+Toast.makeText(this, "SUCESSO!!!" + id, Toast.LENGTH_LONG).show();
+}
+*/
 
 
     }
