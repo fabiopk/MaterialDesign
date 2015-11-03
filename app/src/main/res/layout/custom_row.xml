@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="80dp"
     android:orientation="horizontal">
 
     <ImageView
@@ -9,15 +9,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/common_signin_btn_icon_focus_dark"/>
+        android:src="@drawable/common_signin_btn_icon_focus_dark" />
 
-    <TextView
-        android:id="@+id/restName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         android:layout_gravity="center"
-        android:layout_marginLeft="8dp"
-        android:textSize="22dp"
-        android:text="Dummy Text"/>
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/restName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="8dp"
+            android:text="Dummy Text"
+            android:textSize="22dp" />
+
+        <TextView
+            android:id="@+id/restAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="8dp"
+            android:text="Dummy Address, 720"
+            android:textSize="18dp" />
+
+    </LinearLayout>
 
 </LinearLayout>

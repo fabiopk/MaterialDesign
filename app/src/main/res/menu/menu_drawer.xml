@@ -21,4 +21,9 @@
         android:title="@string/nav_i4"
         android:icon="@drawable/ic_highlight_off_white_48dp"/>
 
+    <item
+        android:id="@+id/navigation_item_5"
+        android:title="@string/nav_i5"
+        android:icon="@drawable/ic_bug_report_white_48dp"/>
+
 </menu>

@@ -25,6 +25,7 @@ import com.facebook.login.widget.ProfilePictureView;
 
 public class MaterialMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static boolean logout_button_clicked;
     Toolbar mToolbar;
     NavigationView mDrawer;
     private DrawerLayout mDrawerLayout;
@@ -50,6 +51,7 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
         TextView welcome = (TextView) findViewById(R.id.welcome);
         welcome.setText("Welcome back " + LoginFragment.profile.getFirstName());
         hueHelper = new HueDatabaseAdapter(this);
+        logout_button_clicked = false;
 /*
 long id = hueHelper.insertData("Matsuri", "Rua André Marques, 570");
 if (id < 0 ){
@@ -98,6 +100,20 @@ Toast.makeText(this, "SUCESSO!!!" + id, Toast.LENGTH_LONG).show();
                 startActivity(new Intent(this, MapsActivity.class));
         } else if (menuItem.getItemId() == R.id.navigation_item_2){
             Log.d("KAKAROTO", hueHelper.getAllData());
+        } else if (menuItem.getItemId() == R.id.navigation_item_4){
+            logout_button_clicked = true;
+            startActivity(new Intent(getApplicationContext(), LoginScreen.class));
+        } else if (menuItem.getItemId() == R.id.navigation_item_5){
+            //DEBUG CODE
+            hueHelper.insertData("Matsuri", "Rua André Marques, 570");
+            hueHelper.insertData("Paiol", "Av. Pres. Vargas, 1892");
+            hueHelper.insertData("Vera Cruz", "Av. Nossa Sra. Medianeira, 1600");
+            long id = hueHelper.insertData("Costa Dourada", "R. dos Andradas, 1273");
+            if (id < 0) {
+                Log.d("ERRO", "ERRO");
+            } else {
+                Log.d("ERRO", String.valueOf(id));
+            }
         }
         return false;
     }

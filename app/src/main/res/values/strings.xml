@@ -8,6 +8,7 @@
     <string name="nav_i2">Minhas Reservas</string>
     <string name="nav_i3">Ver no Mapa</string>
     <string name="nav_i4">Logout</string>
+    <string name="nav_i5">Debug</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
     <string name="app_id">1501349380183547</string>

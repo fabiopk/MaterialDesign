@@ -44,6 +44,7 @@ public class RestAdapter extends RecyclerView.Adapter<RestAdapter.MyViewHolder> 
 //        }
 //        holder.icon.setImageBitmap(bmp);
         holder.icon.setImageResource(R.drawable.ic_cast_light);
+        holder.address.setText(current.address);
     }
 
     @Override
@@ -55,13 +56,13 @@ public class RestAdapter extends RecyclerView.Adapter<RestAdapter.MyViewHolder> 
 
         TextView name;
         ImageView icon;
-
+        TextView address;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.restName);
             icon = (ImageView) itemView.findViewById(R.id.restIcon);
-
+            address = (TextView) itemView.findViewById(R.id.restAdd);
         }
     }
 }
