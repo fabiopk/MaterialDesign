@@ -6,10 +6,10 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 public class HueDatabaseAdapter {
 
@@ -19,11 +19,12 @@ public class HueDatabaseAdapter {
         hueHelper = new HueHelper(context);
     }
 
-    public long insertData(String name, String address) {
+    public long insertData(String name, String address, byte[] image) {
         SQLiteDatabase db = hueHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(HueHelper.NAME, name);
         contentValues.put(HueHelper.ADDRESS, address);
+        contentValues.put(HueHelper.IMAGE, image);
         long id = db.insert(HueHelper.TABLE_NAME, null, contentValues);
         return id;
     }
@@ -50,16 +51,18 @@ public class HueDatabaseAdapter {
         Restaurante current;
 
         SQLiteDatabase db = hueHelper.getWritableDatabase();
-        String[] columns = {HueHelper.UID, HueHelper.NAME, HueHelper.ADDRESS};
+        String[] columns = {HueHelper.UID, HueHelper.NAME, HueHelper.ADDRESS, HueHelper.IMAGE};
 
         Cursor cursor = db.query(HueHelper.TABLE_NAME, columns, null, null, null, null, null);
 
         while (cursor.moveToNext()) {
             String name = cursor.getString(cursor.getColumnIndex(HueHelper.NAME));
             String address = cursor.getString(cursor.getColumnIndex(HueHelper.ADDRESS));
+            byte[] image = cursor.getBlob(cursor.getColumnIndex(HueHelper.IMAGE));
             current = new Restaurante();
             current.name = name;
             current.address = address;
+            current.image = image;
             lista.add(current);
         }
 
@@ -73,13 +76,14 @@ public class HueDatabaseAdapter {
 
             private static final String DATABASE_NAME = "huedatabase.db";
             private static final String TABLE_NAME = "RESTAURANTES";
-            private static final int DATABASE_VERSION = 1;
+            private static final int DATABASE_VERSION = 3;
             private static final String UID = "_id";
             private static final String NAME = "Name";
             private static final String ADDRESS = "Address";
+            private static final String IMAGE = "Image";
             private static final String CREATE_TABLE =
-                    "CREATE TABLE " + TABLE_NAME + " (" + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + NAME + " VARCHAR(255), " + ADDRESS + " VARCHAR(255));";
-            private static final String DROP_TABLE = "DROP TABLE IF EXISTS" + TABLE_NAME;
+                    "CREATE TABLE " + TABLE_NAME + " (" + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + NAME + " VARCHAR(255), " + ADDRESS + " VARCHAR(255), " + IMAGE + " BLOB);";
+            private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
             public HueHelper(Context context) {
                 super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -88,6 +92,7 @@ public class HueDatabaseAdapter {
             @Override
             public void onCreate(SQLiteDatabase db) {
                 try {
+                    Log.d("ERRO", CREATE_TABLE);
                     db.execSQL(CREATE_TABLE);
                 } catch (SQLException e) {
                     e.printStackTrace();

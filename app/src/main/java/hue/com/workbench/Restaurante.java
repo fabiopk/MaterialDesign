@@ -9,5 +9,5 @@ public class Restaurante {
 
     String name;
     String address;
-    URL imlink;
+    byte[] image;
 }

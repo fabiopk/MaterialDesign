@@ -65,6 +65,9 @@ public class LoginFragment extends Fragment {
     public void onResume() {
         super.onResume();
         profile = Profile.getCurrentProfile();
+        if (profile == null){
+            return;
+        }
         Toast.makeText(getActivity(), profile.getFirstName() + " " +profile.getLastName(), Toast.LENGTH_SHORT).show();
         if (!MaterialMain.logout_button_clicked) {
             startActivity(new Intent(getActivity(), MaterialMain.class));

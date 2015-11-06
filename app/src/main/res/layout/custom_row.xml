@@ -2,20 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@drawable/custom_bg"
+    android:clickable="true"
+    >
 
     <ImageView
         android:id="@+id/restIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/common_signin_btn_icon_focus_dark" />
+        android:src="@drawable/common_signin_btn_icon_focus_dark"
+        android:layout_marginLeft="10dp"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp">
 
         <TextView
             android:id="@+id/restName"
@@ -24,7 +29,7 @@
             android:layout_gravity="left"
             android:layout_marginLeft="8dp"
             android:text="Dummy Text"
-            android:textSize="22dp" />
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/restAdd"
@@ -33,7 +38,7 @@
             android:layout_gravity="left"
             android:layout_marginLeft="8dp"
             android:text="Dummy Address, 720"
-            android:textSize="18dp" />
+            android:textSize="16dp" />
 
     </LinearLayout>
 

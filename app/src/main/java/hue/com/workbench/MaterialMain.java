@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,6 +25,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.widget.ProfilePictureView;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class MaterialMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -105,15 +112,42 @@ Toast.makeText(this, "SUCESSO!!!" + id, Toast.LENGTH_LONG).show();
             startActivity(new Intent(getApplicationContext(), LoginScreen.class));
         } else if (menuItem.getItemId() == R.id.navigation_item_5){
             //DEBUG CODE
-            hueHelper.insertData("Matsuri", "Rua André Marques, 570");
-            hueHelper.insertData("Paiol", "Av. Pres. Vargas, 1892");
-            hueHelper.insertData("Vera Cruz", "Av. Nossa Sra. Medianeira, 1600");
-            long id = hueHelper.insertData("Costa Dourada", "R. dos Andradas, 1273");
-            if (id < 0) {
-                Log.d("ERRO", "ERRO");
-            } else {
-                Log.d("ERRO", String.valueOf(id));
-            }
+
+            Thread thread = new Thread(new Runnable(){
+                URL url_value = null;
+                @Override
+                public void run() {
+                    try {
+                        try {
+                            url_value = new URL("http://www.aimisushibar.com.br/Images/aimi_logo.png");
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            Bitmap mIcon1 = BitmapFactory.decodeStream(url_value.openConnection().getInputStream());
+
+                            byte[] img1= DbBitmapUtility.getBytes(mIcon1);
+
+                            hueHelper.insertData("Matsuri", "Rua André Marques, 570",img1);
+                            hueHelper.insertData("Paiol", "Av. Pres. Vargas, 1892",img1);
+                            hueHelper.insertData("Vera Cruz", "Av. Nossa Sra. Medianeira, 1600",img1);
+                            long id = hueHelper.insertData("Costa Dourada", "R. dos Andradas, 1273", img1);
+                            if (id < 0) {
+                                Log.d("ERRO", "ERRO");
+                            } else {
+                                Log.d("ERRO", String.valueOf(id));
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            thread.start();
+
+
         }
         return false;
     }
