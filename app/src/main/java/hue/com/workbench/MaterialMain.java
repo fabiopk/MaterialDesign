@@ -24,11 +24,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.login.widget.ProfilePictureView;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import network.VolleySingleton;
 
 public class MaterialMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -59,15 +67,26 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
         welcome.setText("Welcome back " + LoginFragment.profile.getFirstName());
         hueHelper = new HueDatabaseAdapter(this);
         logout_button_clicked = false;
-/*
-long id = hueHelper.insertData("Matsuri", "Rua André Marques, 570");
-if (id < 0 ){
-Toast.makeText(this, "FAIL!!!", Toast.LENGTH_LONG).show();
 
-} else {
-Toast.makeText(this, "SUCESSO!!!" + id, Toast.LENGTH_LONG).show();
-}
-*/
+        RequestQueue requestQueue = VolleySingleton.getInstance().getRequestQueue();
+        //StringRequest request = new StringRequest(Request.Method.GET, "http://192.168.1.58:5984", new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.GET, "http://192.168.1.58:5984/", new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(MaterialMain.this, "R>" + response, Toast.LENGTH_SHORT).show();
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MaterialMain.this, "E>" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("JSON_", error.getMessage());
+                    }
+                }
+
+        );
+        requestQueue.add(request);
 
 
     }
@@ -103,35 +122,51 @@ Toast.makeText(this, "SUCESSO!!!" + id, Toast.LENGTH_LONG).show();
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-        if (menuItem.getItemId() == R.id.navigation_item_1){
-                startActivity(new Intent(this, MapsActivity.class));
-        } else if (menuItem.getItemId() == R.id.navigation_item_2){
+        if (menuItem.getItemId() == R.id.navigation_item_1) {
+            startActivity(new Intent(this, MapsActivity.class));
+        } else if (menuItem.getItemId() == R.id.navigation_item_2) {
             Log.d("KAKAROTO", hueHelper.getAllData());
-        } else if (menuItem.getItemId() == R.id.navigation_item_4){
+        } else if (menuItem.getItemId() == R.id.navigation_item_4) {
             logout_button_clicked = true;
             startActivity(new Intent(getApplicationContext(), LoginScreen.class));
-        } else if (menuItem.getItemId() == R.id.navigation_item_5){
+        } else if (menuItem.getItemId() == R.id.navigation_item_5) {
             //DEBUG CODE
+            Thread thread = new Thread(new Runnable() {
+                URL url_value, url_value2, url_value3, url_value4 = null;
 
-            Thread thread = new Thread(new Runnable(){
-                URL url_value = null;
                 @Override
                 public void run() {
                     try {
                         try {
-                            url_value = new URL("http://www.aimisushibar.com.br/Images/aimi_logo.png");
+                            url_value = new URL("https://lh3.googleusercontent.com/-C5WOkwQxbag/AAAAAAAAAAI/AAAAAAAAABg/Ouu9C1Yy8tY/photo.jpg");
+                            url_value2 = new URL("https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpa1/v/t1.0-1/c40.0.160.160/p160x160/10559830_624499194332511_4739612982014301845_n.jpg?oh=06549c47a39b707168d45f6ea089aabd&oe=56BC420A&__gda__=1454802765_f685bcb3e0a52c948bcd2a658e232e85");
+                            url_value3 = new URL("http://www.ahturr.com.br/images/content/f6c2e810.jpg");
+                            url_value4 = new URL("http://costadouradasm.com.br/wp-content/themes/portolabs/assets/images/logo.png");
+
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
                         }
                         try {
                             Bitmap mIcon1 = BitmapFactory.decodeStream(url_value.openConnection().getInputStream());
+                            byte[] img1 = DbBitmapUtility.getBytes(mIcon1);
 
-                            byte[] img1= DbBitmapUtility.getBytes(mIcon1);
+                            hueHelper.insertData("Matsuri", "Rua André Marques, 570", img1);
 
-                            hueHelper.insertData("Matsuri", "Rua André Marques, 570",img1);
-                            hueHelper.insertData("Paiol", "Av. Pres. Vargas, 1892",img1);
-                            hueHelper.insertData("Vera Cruz", "Av. Nossa Sra. Medianeira, 1600",img1);
+                            mIcon1 = BitmapFactory.decodeStream(url_value2.openConnection().getInputStream());
+                            img1 = DbBitmapUtility.getBytes(mIcon1);
+
+                            hueHelper.insertData("Paiol", "Av. Pres. Vargas, 1892", img1);
+
+                            mIcon1 = BitmapFactory.decodeStream(url_value3.openConnection().getInputStream());
+                            img1 = DbBitmapUtility.getBytes(mIcon1);
+
+                            hueHelper.insertData("Vera Cruz", "Av. Nossa Sra. Medianeira, 1600", img1);
+
+                            mIcon1 = BitmapFactory.decodeStream(url_value4.openConnection().getInputStream());
+                            img1 = DbBitmapUtility.getBytes(mIcon1);
+
                             long id = hueHelper.insertData("Costa Dourada", "R. dos Andradas, 1273", img1);
+
                             if (id < 0) {
                                 Log.d("ERRO", "ERRO");
                             } else {
@@ -139,15 +174,14 @@ Toast.makeText(this, "SUCESSO!!!" + id, Toast.LENGTH_LONG).show();
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
-                        }                    } catch (Exception e) {
+                        }
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             });
 
             thread.start();
-
-
         }
         return false;
     }
