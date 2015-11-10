@@ -28,9 +28,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.login.widget.ProfilePictureView;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -68,9 +71,16 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
         hueHelper = new HueDatabaseAdapter(this);
         logout_button_clicked = false;
 
+        requestStuff();
+
+
+    }
+
+    private void requestStuff() {
+
         RequestQueue requestQueue = VolleySingleton.getInstance().getRequestQueue();
-        //StringRequest request = new StringRequest(Request.Method.GET, "http://192.168.1.58:5984", new Response.Listener<String>() {
-        StringRequest request = new StringRequest(Request.Method.GET, "http://192.168.1.58:5984/", new Response.Listener<String>() {
+
+        StringRequest request = new StringRequest(Request.Method.GET, "http://192.168.25.6:5984/restaurantes", new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
@@ -86,9 +96,8 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
                 }
 
         );
+
         requestQueue.add(request);
-
-
     }
 
     @Override
