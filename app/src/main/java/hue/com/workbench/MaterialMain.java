@@ -33,11 +33,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.login.widget.ProfilePictureView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import network.VolleySingleton;
 
@@ -50,6 +53,7 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
     private ActionBarDrawerToggle mDrawerToggle;
     private ProfilePictureView profileImage;
     HueDatabaseAdapter hueHelper;
+    ArrayList<JSONObject> menuRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,34 +74,112 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
         welcome.setText("Welcome back " + LoginFragment.profile.getFirstName());
         hueHelper = new HueDatabaseAdapter(this);
         logout_button_clicked = false;
+        menuRequest = new ArrayList<JSONObject>();
 
         requestStuff();
 
 
     }
 
-    private void requestStuff() {
+    private void displayStuff() throws JSONException, MalformedURLException {
 
-        RequestQueue requestQueue = VolleySingleton.getInstance().getRequestQueue();
+        for (final JSONObject jsonObject : menuRequest) {
+            Thread thread = new Thread(new Runnable() {
 
-        StringRequest request = new StringRequest(Request.Method.GET, "http://192.168.25.6:5984/restaurantes", new Response.Listener<String>() {
+                URL url = new URL(jsonObject.getString("Image"));
 
-            @Override
-            public void onResponse(String response) {
-                Toast.makeText(MaterialMain.this, "R>" + response, Toast.LENGTH_SHORT).show();
-            }
-        },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MaterialMain.this, "E>" + error.getMessage(), Toast.LENGTH_SHORT).show();
-                        Log.d("JSON_", error.getMessage());
+                @Override
+                public void run() {
+                    try {
+                        Bitmap mIcon = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                        byte[] img = DbBitmapUtility.getBytes(mIcon);
+
+                        hueHelper.insertData(jsonObject.getString("Name"), jsonObject.getString("Address"), img);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
+            });
 
-        );
+            thread.start();
+        }
 
-        requestQueue.add(request);
+    }
+
+    private void requestStuff() {
+        final ArrayList<String> indexList = new ArrayList<String>();
+
+        final RequestQueue queue = Volley.newRequestQueue(this);
+
+        final StringBuilder output = new StringBuilder();
+        String url = "http://192.168.25.6:5984/restaurantes/_all_docs";
+        Log.d("Sera", output.toString());
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(
+                Request.Method.GET, url, (String) null,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // TODO Auto-generated method stub
+                        try {
+                            JSONArray jsonArray = response.getJSONArray("rows");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject childJSONObject = jsonArray
+                                        .getJSONObject(i);
+                                indexList.add(childJSONObject.getString("id"));
+                                Log.d("Sera", output.toString());
+                            }
+
+                            // Second Request stuff
+                            String baseURL = "http://192.168.25.6:5984/restaurantes/";
+                            for (String id : indexList) {
+
+                                final JsonObjectRequest jsObjRequest = new JsonObjectRequest(
+                                        Request.Method.GET, baseURL + id, (String) null,
+                                        new Response.Listener<JSONObject>() {
+
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                output.append("Response => "
+                                                        + response.toString()
+                                                        + "\r\n\r\n");
+                                                Log.d("Sera", output.toString());
+                                                try {
+                                                    Toast.makeText(getApplicationContext(), response.getString("Name") + "  " + response.getString("Address"), Toast.LENGTH_LONG).show();
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                menuRequest.add(response);
+
+                                            }
+                                        }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        //nothing
+
+                                    }
+                                });
+                                queue.add(jsObjRequest);
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Log.i("VolleyTestSimple", "Here we go!");
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // TODO Auto-generated method stub
+                Log.e("VolleyTestSimple", "Didn't get shit!");
+            }
+        });
+
+        queue.add(jsObjRequest);
     }
 
     @Override
@@ -134,7 +216,13 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
         if (menuItem.getItemId() == R.id.navigation_item_1) {
             startActivity(new Intent(this, MapsActivity.class));
         } else if (menuItem.getItemId() == R.id.navigation_item_2) {
-            Log.d("KAKAROTO", hueHelper.getAllData());
+            try {
+                displayStuff();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
         } else if (menuItem.getItemId() == R.id.navigation_item_4) {
             logout_button_clicked = true;
             startActivity(new Intent(getApplicationContext(), LoginScreen.class));

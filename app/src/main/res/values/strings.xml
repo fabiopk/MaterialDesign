@@ -13,4 +13,5 @@
     <string name="drawer_close">Close</string>
     <string name="app_id">1501349380183547</string>
     <string name="title_activity_maps">Map</string>
+    <string name="refresh_button">Refresh</string>
 </resources>
