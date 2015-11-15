@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import network.VolleySingleton;
 
@@ -146,11 +148,7 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
                                                         + response.toString()
                                                         + "\r\n\r\n");
                                                 Log.d("Sera", output.toString());
-                                                try {
-                                                    Toast.makeText(getApplicationContext(), response.getString("Name") + "  " + response.getString("Address"), Toast.LENGTH_LONG).show();
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                }
+
                                                 menuRequest.add(response);
 
                                             }
@@ -161,7 +159,7 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
 
                                     }
                                 });
-                                queue.add(jsObjRequest);
+                                VolleySingleton.getInstance().getRequestQueue().add(jsObjRequest);
 
                             }
 
@@ -179,7 +177,83 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        queue.add(jsObjRequest);
+        VolleySingleton.getInstance().getRequestQueue().add(jsObjRequest);
+    }
+
+    private void setStuff() {
+//        final ArrayList<String> indexList = new ArrayList<String>();
+//
+//        final RequestQueue queue = Volley.newRequestQueue(this);
+//
+//        final StringBuilder output = new StringBuilder();
+//
+//        String url = "http://192.168.25.6:5984/reservas/b8f005f84373a48a8c5b9d978d000eef";
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(
+//                Request.Method.GET, url, (String) null,
+//                new Response.Listener<JSONObject>() {
+//
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        // TODO Auto-generated method stub
+//                        try {
+//                            JSONArray jsonArray = response.getJSONArray("Book");
+//                            for (int i = 0; i < jsonArray.length(); i++) {
+//                                indexList.add(String.valueOf(jsonArray.getInt(i)));
+//                                Log.d("QUACK", indexList.toString());
+//                            }
+//
+//                            String url = "http://192.168.25.6:5984/reservas/b8f005f84373a48a8c5b9d978d000eef";
+//                            StringRequest putRequest = new StringRequest(Request.Method.PUT,url,
+//                                    new Response.Listener<String>() {
+//                                        @Override
+//                                        public void onResponse(String response) {
+//                                            // response
+//                                            Log.d("Response", response);
+//                                        }
+//                                    },
+//                                    new Response.ErrorListener() {
+//                                        @Override
+//                                        public void onErrorResponse(VolleyError error) {
+//                                            // error
+//                                            Log.d("Error.Response", error.toString());
+//                                        }
+//                                    }
+//                            ) {
+//
+//                                @Override
+//                                protected Map<String, String> getParams() {
+//                                    Map<String, String> params = new HashMap<String, String>();
+//                                    JSONArray horario = new JSONArray();
+//                                    horario.put(12);
+//                                    horario.put(34);
+//                                    horario.put(56);
+//                                    horario.put(78);
+//
+//                                    params.put("Book", horario.toString());
+//
+//
+//                                    return params;
+//                                }
+//
+//                            };
+//
+//                            VolleySingleton.getInstance().getRequestQueue().add(putRequest);
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                        Log.i("VolleyTestSimple", "Here we go!");
+//                    }
+//                }, new Response.ErrorListener() {
+//
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                // TODO Auto-generated method stub
+//                Log.e("VolleyTestSimple", "Didn't get shit!");
+//            }
+//        });
+//
+//        VolleySingleton.getInstance().getRequestQueue().add(jsObjRequest);
     }
 
     @Override
@@ -200,7 +274,17 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_refresh) {
+            try {
+                displayStuff();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
 
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -223,62 +307,14 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
+        } else if (menuItem.getItemId() == R.id.navigation_item_3) {
+            setStuff();
         } else if (menuItem.getItemId() == R.id.navigation_item_4) {
             logout_button_clicked = true;
             startActivity(new Intent(getApplicationContext(), LoginScreen.class));
         } else if (menuItem.getItemId() == R.id.navigation_item_5) {
             //DEBUG CODE
-            Thread thread = new Thread(new Runnable() {
-                URL url_value, url_value2, url_value3, url_value4 = null;
-
-                @Override
-                public void run() {
-                    try {
-                        try {
-                            url_value = new URL("https://lh3.googleusercontent.com/-C5WOkwQxbag/AAAAAAAAAAI/AAAAAAAAABg/Ouu9C1Yy8tY/photo.jpg");
-                            url_value2 = new URL("https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpa1/v/t1.0-1/c40.0.160.160/p160x160/10559830_624499194332511_4739612982014301845_n.jpg?oh=06549c47a39b707168d45f6ea089aabd&oe=56BC420A&__gda__=1454802765_f685bcb3e0a52c948bcd2a658e232e85");
-                            url_value3 = new URL("http://www.ahturr.com.br/images/content/f6c2e810.jpg");
-                            url_value4 = new URL("http://costadouradasm.com.br/wp-content/themes/portolabs/assets/images/logo.png");
-
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            Bitmap mIcon1 = BitmapFactory.decodeStream(url_value.openConnection().getInputStream());
-                            byte[] img1 = DbBitmapUtility.getBytes(mIcon1);
-
-                            hueHelper.insertData("Matsuri", "Rua André Marques, 570", img1);
-
-                            mIcon1 = BitmapFactory.decodeStream(url_value2.openConnection().getInputStream());
-                            img1 = DbBitmapUtility.getBytes(mIcon1);
-
-                            hueHelper.insertData("Paiol", "Av. Pres. Vargas, 1892", img1);
-
-                            mIcon1 = BitmapFactory.decodeStream(url_value3.openConnection().getInputStream());
-                            img1 = DbBitmapUtility.getBytes(mIcon1);
-
-                            hueHelper.insertData("Vera Cruz", "Av. Nossa Sra. Medianeira, 1600", img1);
-
-                            mIcon1 = BitmapFactory.decodeStream(url_value4.openConnection().getInputStream());
-                            img1 = DbBitmapUtility.getBytes(mIcon1);
-
-                            long id = hueHelper.insertData("Costa Dourada", "R. dos Andradas, 1273", img1);
-
-                            if (id < 0) {
-                                Log.d("ERRO", "ERRO");
-                            } else {
-                                Log.d("ERRO", String.valueOf(id));
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            thread.start();
+            setStuff();
         }
         return false;
     }

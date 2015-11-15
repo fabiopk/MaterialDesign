@@ -2,6 +2,7 @@ package hue.com.workbench;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +25,8 @@ public class RecyclerFragment extends Fragment {
     private RecyclerView recyclerView;
     private RestAdapter adapter;
     private static Context context;
+    public static String current_restaurante;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -43,27 +46,24 @@ public class RecyclerFragment extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 //TODO
-                Toast.makeText(getActivity(),"The" + position + " was clciked!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"The " +hueHelper.getRestaurante().get(position).name + " was clciked!", Toast.LENGTH_SHORT).show();
+                current_restaurante = hueHelper.getRestaurante().get(position).name;
+                startActivity(new Intent(getActivity(), Reserva.class));
             }
 
             @Override
             public void onLongClick(View view, int position) {
             //TODO
-                Toast.makeText(getActivity(),"The" + position + " was LOONG clciked!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"The " + position + " was LOONG clciked!", Toast.LENGTH_SHORT).show();
             }
         }));
         return layout;
     }
 
     public static List<Restaurante> getData() throws MalformedURLException {
-//        List<Restaurante> data = new ArrayList<>();
         hueHelper = new HueDatabaseAdapter(context);
         List<Restaurante> data = hueHelper.getRestaurante();
-//        for(int i=0; i<lista.size();i++){
-//            Restaurante current = new Restaurante();
-//            current.name = names[i];
-//            data.add(current);
-//        }
+
         return data;
     }
 
