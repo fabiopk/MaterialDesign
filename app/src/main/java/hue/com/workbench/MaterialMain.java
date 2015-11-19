@@ -48,6 +48,7 @@ import network.VolleySingleton;
 
 public class MaterialMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "TEST_POST";
     public static boolean logout_button_clicked;
     Toolbar mToolbar;
     NavigationView mDrawer;
@@ -308,7 +309,8 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
                 e.printStackTrace();
             }
         } else if (menuItem.getItemId() == R.id.navigation_item_3) {
-            setStuff();
+            //setStuff();
+            putTest();
         } else if (menuItem.getItemId() == R.id.navigation_item_4) {
             logout_button_clicked = true;
             startActivity(new Intent(getApplicationContext(), LoginScreen.class));
@@ -317,5 +319,60 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
             setStuff();
         }
         return false;
+    }
+
+    private void putTest() {
+
+        ICommunication com = new SendData();
+        DataBaseCommunication.sendPost(com);
+
+    }
+
+    private class SendData implements ICommunication {
+
+        private JSONObject obj;
+        private String url = "http://192.168.25.6:5984/test/batata";
+
+        public SendData(String url) {
+            this.url = url;
+        }
+
+        public SendData() {
+            try {
+                obj = new JSONObject();
+                obj.put("Name", "chassis11");
+                obj.put("Teste", "frame11");
+                Log.d(TAG, obj.toString());
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            if (error.getMessage() != null) {
+                Log.d(TAG, error.getMessage());
+            }
+            if (error.networkResponse != null) {
+                Log.d(TAG, error.networkResponse.statusCode + "");
+            }
+        }
+
+        @Override
+        public void onResponse(JSONObject arg0) {
+            obj = arg0;
+            Log.d(TAG, arg0.toString());
+        }
+
+        @Override
+        public JSONObject getData() {
+            return obj;
+        }
+
     }
 }
