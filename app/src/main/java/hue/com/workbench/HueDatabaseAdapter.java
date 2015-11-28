@@ -19,13 +19,22 @@ public class HueDatabaseAdapter {
         hueHelper = new HueHelper(context);
     }
 
-    public long insertData(String name, String address, byte[] image) {
+    public long insertData(String name, String address, byte[] image, String cordinate) {
         SQLiteDatabase db = hueHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(HueHelper.NAME, name);
         contentValues.put(HueHelper.ADDRESS, address);
         contentValues.put(HueHelper.IMAGE, image);
+        contentValues.put(HueHelper.CORDINATE, cordinate);
         long id = db.insert(HueHelper.TABLE_NAME, null, contentValues);
+        return id;
+    }
+
+    public long insertCordinate(String cordinate) {
+        SQLiteDatabase db = hueHelper.getWritableDatabase();
+        ContentValues contentValues1 = new ContentValues();
+
+        long id = db.insert(HueHelper.TABLE_NAME, null, contentValues1);
         return id;
     }
 
@@ -45,13 +54,13 @@ public class HueDatabaseAdapter {
         return bf.toString();
     }
 
-    public List<Restaurante> getRestaurante() {
+    public List<Restaurante> getRestaurante() {//retorna os dados do banco
 
         List<Restaurante> lista = new ArrayList<>();
         Restaurante current;
 
         SQLiteDatabase db = hueHelper.getWritableDatabase();
-        String[] columns = {HueHelper.UID, HueHelper.NAME, HueHelper.ADDRESS, HueHelper.IMAGE};
+        String[] columns = {HueHelper.UID, HueHelper.NAME, HueHelper.ADDRESS, HueHelper.IMAGE, HueHelper.CORDINATE};
 
         Cursor cursor = db.query(HueHelper.TABLE_NAME, columns, null, null, null, null, null);
 
@@ -59,10 +68,12 @@ public class HueDatabaseAdapter {
             String name = cursor.getString(cursor.getColumnIndex(HueHelper.NAME));
             String address = cursor.getString(cursor.getColumnIndex(HueHelper.ADDRESS));
             byte[] image = cursor.getBlob(cursor.getColumnIndex(HueHelper.IMAGE));
+            String cordinate = cursor.getString(cursor.getColumnIndex(HueHelper.CORDINATE));
             current = new Restaurante();
             current.name = name;
             current.address = address;
             current.image = image;
+            current.cordinate = cordinate;
             lista.add(current);
         }
 
@@ -76,13 +87,15 @@ public class HueDatabaseAdapter {
 
             private static final String DATABASE_NAME = "huedatabase.db";
             private static final String TABLE_NAME = "RESTAURANTES";
-            private static final int DATABASE_VERSION = 3;
+            private static final int DATABASE_VERSION = 4;
             private static final String UID = "_id";
             private static final String NAME = "Name";
             private static final String ADDRESS = "Address";
             private static final String IMAGE = "Image";
+            private static final String CORDINATE = "Cordinate";
+
             private static final String CREATE_TABLE =
-                    "CREATE TABLE " + TABLE_NAME + " (" + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + NAME + " VARCHAR(255), " + ADDRESS + " VARCHAR(255), " + IMAGE + " BLOB);";
+                    "CREATE TABLE " + TABLE_NAME + " (" + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + NAME + " VARCHAR(255), " + ADDRESS + " VARCHAR(255), " + CORDINATE + " VARCHAR(255), "+ IMAGE + " BLOB);";
             private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
             public HueHelper(Context context) {

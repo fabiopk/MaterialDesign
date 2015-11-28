@@ -10,4 +10,25 @@ public class Restaurante {
     String name;
     String address;
     byte[] image;
+    String cordinate;
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public String getCordinate() {
+        return cordinate;
+    }
+
+
 }
+
+

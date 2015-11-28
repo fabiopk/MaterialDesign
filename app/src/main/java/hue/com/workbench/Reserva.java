@@ -77,7 +77,7 @@ public class Reserva extends AppCompatActivity implements AdapterView.OnItemSele
 
         final StringBuilder output = new StringBuilder();
 
-        String url = "http://192.168.25.6:5984/reservas/" + RecyclerFragment.current_restaurante.replaceAll("\\s","");
+        String url = "http://192.168.0.5:5901/reservas/" + RecyclerFragment.current_restaurante.replaceAll("\\s","");
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(
                 Request.Method.GET, url, (String) null,

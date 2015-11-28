@@ -2,10 +2,10 @@ package hue.com.workbench;
 import android.location.Location;
 
 import android.content.IntentSender;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -18,13 +18,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.regex.Pattern;
+
 public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
     public static final String TAG = MapsActivity.class.getSimpleName();
-
     /*
      * Define a request code to send to Google Play services
      * This code is returned in Activity.onActivityResult
@@ -35,12 +39,45 @@ public class MapsActivity extends FragmentActivity implements
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    ArrayList<Restaurante> listaDados;
+    HueDatabaseAdapter hueHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+        hueHelper = new HueDatabaseAdapter(this);
+
+        listaDados = (ArrayList<Restaurante>) hueHelper.getRestaurante();//lista das coisas
+        if(listaDados.size() == 0){
+            Toast.makeText(getApplicationContext(), "Problema com a lista " , Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        float lat, lng;
+        String aux[];
+
+
+       for (Restaurante nomeRest : listaDados){
+           // Restaurante nomeRest = listaDados.get(0);
+            aux = nomeRest.getCordinate().split(Pattern.quote(" "));
+            lat = Float.parseFloat(aux[0]);
+            lng = Float.parseFloat(aux[1]);
+            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title(nomeRest.getName()));
+        }
+
+       /* final int size = listaDados.size();
+        Restaurante nomeRest;
+        for(int i = 0; i < size; i++){
+            nomeRest = listaDados.get(i);
+            aux = nomeRest.getCordinate().split(Pattern.quote(" "));
+            lat = Float.parseFloat(aux[0]);
+            lng = Float.parseFloat(aux[1]);
+            //String dias[] = semanas.split(Pattern.quote(","));
+            mMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title(nomeRest.getName()));
+            System.out.println(nomeRest.getName() + " IMPRIMINDO");
+        }*/
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -101,16 +138,14 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p/>
+     * This is where we can add markers or lines, add listeners or move the camera.
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
 
-        mMap.addMarker(new MarkerOptions().position(new LatLng(-29.683269, -53.805117)).title("Matsuri"));
+       /* mMap.addMarker(new MarkerOptions().position(new LatLng(-29.683269, -53.805117)).title("Matsuri"));
         mMap.addMarker(new MarkerOptions().position(new LatLng( -29.693193, -53.810485)).title("Paiol"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng( -29.686296, -53.810390)).title("Bovinus"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng( -29.686296, -53.810390)).title("Bovinus"));*/
 
     }
 
@@ -121,14 +156,9 @@ public class MapsActivity extends FragmentActivity implements
         double currentLongitude = location.getLongitude();
 
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-
         mMap.setMyLocationEnabled(true);
-        /*MarkerOptions options = new MarkerOptions()
-                .position(latLng)
-                .title("I am here!");
-        mMap.addMarker(options);*/
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
-    }
+        }
 
     @Override
     public void onConnected(Bundle bundle) {

@@ -79,7 +79,7 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
         logout_button_clicked = false;
         menuRequest = new ArrayList<JSONObject>();
 
-        requestStuff();
+        requestStuff(); //OI
 
 
     }
@@ -97,7 +97,7 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
                         Bitmap mIcon = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                         byte[] img = DbBitmapUtility.getBytes(mIcon);
 
-                        hueHelper.insertData(jsonObject.getString("Name"), jsonObject.getString("Address"), img);
+                        hueHelper.insertData(jsonObject.getString("Name"), jsonObject.getString("Address"), img, jsonObject.getString("Cordinate"));
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (Exception e) {
@@ -117,7 +117,7 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
         final RequestQueue queue = Volley.newRequestQueue(this);
 
         final StringBuilder output = new StringBuilder();
-        String url = "http://192.168.25.6:5984/restaurantes/_all_docs";
+        String url = "http://192.168.0.5:5901/restaurantes/_all_docs";
         Log.d("Sera", output.toString());
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(
                 Request.Method.GET, url, (String) null,
@@ -136,7 +136,7 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
                             }
 
                             // Second Request stuff
-                            String baseURL = "http://192.168.25.6:5984/restaurantes/";
+                            String baseURL = "http://192.168.0.5:5901/restaurantes/";
                             for (String id : indexList) {
 
                                 final JsonObjectRequest jsObjRequest = new JsonObjectRequest(
@@ -150,7 +150,7 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
                                                         + "\r\n\r\n");
                                                 Log.d("Sera", output.toString());
 
-                                                menuRequest.add(response);
+                                                menuRequest.add(response);//tem todas as propriedades do Json
 
                                             }
                                         }, new Response.ErrorListener() {
@@ -299,7 +299,8 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.navigation_item_1) {
-            startActivity(new Intent(this, MapsActivity.class));
+            //startActivity(new Intent(this, MapsActivity.class));
+            putTest();
         } else if (menuItem.getItemId() == R.id.navigation_item_2) {
             try {
                 displayStuff();
@@ -310,7 +311,8 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
             }
         } else if (menuItem.getItemId() == R.id.navigation_item_3) {
             //setStuff();
-            putTest();
+            startActivity(new Intent(this, MapsActivity.class));
+
         } else if (menuItem.getItemId() == R.id.navigation_item_4) {
             logout_button_clicked = true;
             startActivity(new Intent(getApplicationContext(), LoginScreen.class));
@@ -331,7 +333,7 @@ public class MaterialMain extends AppCompatActivity implements NavigationView.On
     private class SendData implements ICommunication {
 
         private JSONObject obj;
-        private String url = "http://192.168.25.6:5984/test/batata";
+        private String url = "http://192.168.0.5:5901/test/batata";
 
         public SendData(String url) {
             this.url = url;
